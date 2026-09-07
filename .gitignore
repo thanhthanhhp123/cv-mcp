@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# uv
+uv.lock
+
+# Project
+models/*.pt
+models/*.onnx
+tests/fixtures/*.jpg
+tests/fixtures/*.jpeg
+tests/fixtures/*.png
+scripts/hpc/artifacts/*.jpg
+.cache/
+storage/
+*.local
+.env
+
+# Internal working notes — not part of the public repo
+CLAUDE.md
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+out/

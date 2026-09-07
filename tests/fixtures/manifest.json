@@ -1,0 +1,33 @@
+{
+  "_comment": "Real shelf photos for integration tests. Run download_fixtures.py to fetch. SKU-110K images (with exact ground-truth counts) can be added here with an 'expected_count' field once obtained separately (academic use; do not commit the raw images).",
+  "fixtures": [
+    {
+      "file": "wine_shelf.jpg",
+      "wikimedia": "Alsatian wines in a supermarket.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Alsatian_wines_in_a_supermarket.jpg",
+      "license": "CC BY 2.0",
+      "author": "francois (Flickr)",
+      "use": "dense bottles: COCO yolov8s@960 -> ~66 'bottle', SKU-110K fine-tune -> ~62 'product'",
+      "min_bottles": 8,
+      "public_demo_ok": true
+    },
+    {
+      "file": "bread_shelf.jpg",
+      "wikimedia": "2019-08-01 Krustenbrot for sale at supermarket.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:2019-08-01_Krustenbrot_for_sale_at_supermarket.jpg",
+      "license": "CC BY-SA 4.0",
+      "author": "Maksym Kozlenko",
+      "use": "full shelf, packaged goods in rows",
+      "public_demo_ok": true
+    },
+    {
+      "file": "empty_shelf.jpg",
+      "wikimedia": "Covid-19 pandemic food store Lordship Lane Tottenham, London, England 2.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Covid-19_pandemic_food_store_Lordship_Lane_Tottenham,_London,_England_2.jpg",
+      "license": "CC BY-SA 4.0",
+      "author": "Acabashi",
+      "use": "wide storefront view (produce stalls, not a close shelf) - negative/robustness case; both models find ~nothing, which is correct",
+      "public_demo_ok": true
+    }
+  ]
+}

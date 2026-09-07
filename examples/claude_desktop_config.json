@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "shelf-auditor": {
+      "command": "uv",
+      "args": ["run", "--directory", "/absolute/path/to/cv-mcp", "python", "-m", "vision_mcp.server"],
+      "env": {
+        "VISION_MCP_DEVICE": "auto"
+      }
+    }
+  }
+}
