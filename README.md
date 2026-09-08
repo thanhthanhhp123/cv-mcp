@@ -234,7 +234,10 @@ Environment variables, prefix `VISION_MCP_` (see `src/vision_mcp/config.py`):
 <div align="center">
 
 **Built by Trần Quang Thành** — AI Engineer specialising in Computer Vision &amp; LLM agents.
+Available for freelance work.
 
-[GitHub @thanhthanhhp123](https://github.com/thanhthanhhp123)
+[Upwork](https://www.upwork.com/freelancers/~01cd79ade41c025108) ·
+[LinkedIn](https://www.linkedin.com/in/quang-th%C3%A0nh-tr%E1%BA%A7n-103a78234/) ·
+[GitHub](https://github.com/thanhthanhhp123)
 
 </div>
