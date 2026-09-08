@@ -8,7 +8,8 @@ The `.jpg` files are **not committed** — fetch them with
 |------|--------|---------|--------|-----|
 | `wine_shelf.jpg` | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Alsatian_wines_in_a_supermarket.jpg) | CC BY 2.0 | francois (Flickr) | many wine bottles → COCO `bottle` class, numeric assertion |
 | `bread_shelf.jpg` | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:2019-08-01_Krustenbrot_for_sale_at_supermarket.jpg) | CC BY-SA 4.0 | Maksym Kozlenko | full shelf of packaged goods (COCO detects ~none — motivates SKU fine-tune) |
-| `empty_shelf.jpg` | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Covid-19_pandemic_food_store_Lordship_Lane_Tottenham,_London,_England_2.jpg) | CC BY-SA 4.0 | Acabashi | visible out-of-stock gaps |
+| `price_tag.jpg` | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:2021-06-28_E-ink_price_tag_in_Sydney_supermarket.jpg) | CC BY-SA 4.0 | Maksym Kozlenko | readable shelf label — `read_price_tags` parses `$11`, `$0.25/100` |
+| `empty_shelf.jpg` | [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Covid-19_pandemic_food_store_Lordship_Lane_Tottenham,_London,_England_2.jpg) | CC BY-SA 4.0 | Acabashi | wide storefront view — negative/robustness case |
 
 Synthetic images used by the core suite are generated in-test (`tests/conftest.py`)
 and need no source entry.

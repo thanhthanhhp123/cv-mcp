@@ -58,3 +58,15 @@ def test_tools_never_raise_on_real_photos(file):
     g = detect_gaps(params)
     assert c.image.width > 0 and g.image.width == c.image.width
     assert g.gap_count == len(g.gaps)
+
+
+def test_read_price_tags_on_a_readable_label():
+    """Only runs with the 'ocr' extra installed."""
+    pytest.importorskip("doctr")
+    path = _need("price_tag.jpg")
+    from vision_mcp.tools.read_price_tags import read_price_tags
+
+    out = read_price_tags(ImageInput(image=str(path), annotate=False))
+    assert out.status == "ok"
+    priced = [t for t in out.tags if t.price_value is not None]
+    assert len(priced) >= _ITEMS["price_tag.jpg"]["min_prices"]

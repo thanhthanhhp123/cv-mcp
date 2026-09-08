@@ -40,7 +40,7 @@ real fine-tuned model behind it, not a pile of half-features.
 | **`check_planogram`** | `missing` / `misplaced` / `extra` / `wrong_order` deviations against a slot spec, plus a `compliant` flag | ✅ |
 | **`shelf_report`** | Meta-tool: runs count + gaps (+ planogram) and returns one combined JSON **and** a Markdown summary | ✅ |
 | `get_job_status` · `get_job_result` | Poll long-running jobs | ✅ |
-| **`read_price_tags`** | Prices OCR'd ([`python-doctr`](https://github.com/mindee/doctr)) and linked to the nearest product | 🧪 implemented; tuning the price→product match on real shelves |
+| **`read_price_tags`** | Prices OCR'd ([`python-doctr`](https://github.com/mindee/doctr)), parsed to `{value, currency}`, linked to the nearest product | 🧪 solid on readable labels; tiny / superscript-cent tags in wide shots need a dedicated tag detector |
 
 The vision backends are pluggable behind one interface. `read_price_tags` needs
 the optional `ocr` extra; without it the tool returns a clean `not_implemented`
@@ -196,8 +196,10 @@ docker build -f Dockerfile.cuda -t shelf-auditor:cuda .    # CUDA — run with -
 ## Roadmap
 
 - **Price-tag OCR** — `read_price_tags` runs [`python-doctr`](https://github.com/mindee/doctr)
-  and parses currency-formatted strings; still tuning the price→product
-  association and Euro superscript-cent tags (`5⁴⁰`) on real shelves.
+  and parses `{value, currency}` (works well on clear labels — `$11`, `$0.25/100`,
+  `1.19`). Generic OCR misses small / distant tags and European superscript-cent
+  formats (`5⁴⁰`); a production version needs a price-tag region detector feeding
+  per-crop OCR.
 - **In-domain detector.** SKU-110K is dead-on, evenly-lit US grocery; on angled
   or dim store photos the fine-tune localises well but scores lower (hence
   `detector_conf` 0.2). `train_sku110k.sbatch` retrains on any labelled set

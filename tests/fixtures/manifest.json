@@ -21,6 +21,16 @@
       "public_demo_ok": true
     },
     {
+      "file": "price_tag.jpg",
+      "wikimedia": "2021-06-28 E-ink price tag in Sydney supermarket.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:2021-06-28_E-ink_price_tag_in_Sydney_supermarket.jpg",
+      "license": "CC BY-SA 4.0",
+      "author": "Maksym Kozlenko",
+      "use": "readable shelf label -> read_price_tags parses $11, $0.25/100",
+      "min_prices": 1,
+      "public_demo_ok": true
+    },
+    {
       "file": "empty_shelf.jpg",
       "wikimedia": "Covid-19 pandemic food store Lordship Lane Tottenham, London, England 2.jpg",
       "source": "https://commons.wikimedia.org/wiki/File:Covid-19_pandemic_food_store_Lordship_Lane_Tottenham,_London,_England_2.jpg",
