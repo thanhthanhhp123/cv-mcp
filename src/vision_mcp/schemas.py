@@ -69,11 +69,12 @@ class DetectGapsOutput(_Strict):
     notes: list[str] = Field(default_factory=list)
 
 
-# --- read_price_tags (stub) ---------------------------------------
+# --- read_price_tags ------------------------------------------------
 class PriceTag(_Strict):
-    text: str
-    price_value: float | None
-    currency: str | None
+    text: str = Field(..., description="Raw OCR string.")
+    price_value: float | None = None
+    currency: str | None = Field(None, description="ISO-ish code inferred from the tag (EUR, USD, …).")
+    confidence: float = 0.0
     bbox: BBox
     bbox_normalized: BBox
     linked_product_bbox: BBox | None = None
@@ -83,6 +84,7 @@ class ReadPriceTagsOutput(_Strict):
     status: Literal["ok", "not_implemented"]
     tags: list[PriceTag] = Field(default_factory=list)
     image: ImageMeta | None = None
+    annotated: AnnotatedImage | None = None
     notes: list[str] = Field(default_factory=list)
 
 

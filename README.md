@@ -3,8 +3,7 @@
 # 🛒 Shelf Auditor MCP
 
 **Point an LLM agent at a photo of a retail shelf — it counts the products,
-finds the out-of-stock gaps, reads the price tags, and checks the layout
-against a planogram.**
+finds the out-of-stock gaps, and checks the layout against a planogram.**
 
 A [Model Context Protocol](https://modelcontextprotocol.io) server for
 retail-shelf computer vision.
@@ -34,19 +33,36 @@ real fine-tuned model behind it, not a pile of half-features.
 
 ## What it can do
 
-| Tool | What it returns |
-|------|-----------------|
-| **`count_products`** | Per-label counts, every item's `bbox` (pixels) + `bbox_normalized` (0–1) + confidence, and an annotated image |
-| **`detect_gaps`** | Empty shelf regions grouped by row, each with a width ratio vs. the row's mean product and a severity (`minor` / `moderate` / `major`) |
-| **`read_price_tags`** | Price labels linked to the nearest product — *OCR backend is a documented stub for now* |
-| **`check_planogram`** | `missing` / `misplaced` / `extra` / `wrong_order` deviations against a slot spec, plus a `compliant` flag |
-| **`shelf_report`** | Meta-tool: runs count + gaps (+ planogram) and returns one combined JSON **and** a Markdown summary |
-| `get_job_status` · `get_job_result` | Poll long-running jobs |
+| Tool | What it returns | Status |
+|------|-----------------|:------:|
+| **`count_products`** | Per-label counts, every item's `bbox` (pixels) + `bbox_normalized` (0–1) + confidence, and an annotated image | ✅ |
+| **`detect_gaps`** | Empty shelf regions grouped by row, each with a width ratio vs. the row's mean product and a severity (`minor` / `moderate` / `major`) | ✅ |
+| **`check_planogram`** | `missing` / `misplaced` / `extra` / `wrong_order` deviations against a slot spec, plus a `compliant` flag | ✅ |
+| **`shelf_report`** | Meta-tool: runs count + gaps (+ planogram) and returns one combined JSON **and** a Markdown summary | ✅ |
+| `get_job_status` · `get_job_result` | Poll long-running jobs | ✅ |
+| **`read_price_tags`** | Prices OCR'd ([`python-doctr`](https://github.com/mindee/doctr)) and linked to the nearest product | 🧪 implemented; tuning the price→product match on real shelves |
+
+The vision backends are pluggable behind one interface. `read_price_tags` needs
+the optional `ocr` extra; without it the tool returns a clean `not_implemented`
+status (the agent handles it, and `shelf_report` still runs the rest) instead of
+crashing.
 
 **Resources:** `image://{id}` · `results://{job_id}` · `annotated://{job_id}` · `models://available`<br>
 **Prompts:** `count-items` · `detect-gaps` · `read-shelf` · `planogram-check`
 
 ## See it work
+
+### In an agent (Claude Desktop)
+
+Ask in plain language — *"How many products are on this shelf and are there any
+gaps?"* — and the agent picks `shelf_report`, runs it on the image, and comes
+back with the counts, the gap list, and an annotated picture. Walkthrough:
+[`examples/demo_walkthrough.md`](examples/demo_walkthrough.md).
+
+*🎥 Screen-recording of the agent flow — coming shortly.*
+
+<!-- TODO: embed docs/assets/agent-demo.gif — Claude Desktop → question → tool call → JSON + annotated image, ~20s clip -->
+
 
 ### Why a retail-specific detector
 
@@ -177,16 +193,17 @@ docker build -t shelf-auditor .                            # CPU
 docker build -f Dockerfile.cuda -t shelf-auditor:cuda .    # CUDA — run with --gpus all
 ```
 
-## Limitations & roadmap
+## Roadmap
 
-- **Price OCR is a stub.** `read_price_tags` returns `not_implemented`; the
-  interface is complete. Next: wire `OcrBackend` to `python-doctr` (`ocr` extra).
-- **Domain shift.** SKU-110K is dead-on, evenly-lit US grocery. On angled or dim
-  store photos the fine-tune localises well but scores lower — hence
-  `detector_conf` defaults to 0.2. Re-run `train_sku110k.sbatch` on in-domain
-  data (`IMGSZ=1280` for the tiny facings) for a specific deployment.
-- **Out of MVP scope:** video / tracking, per-client model training, batch
-  folders, cloud vision backends, multi-tenant auth.
+- **Price-tag OCR** — `read_price_tags` runs [`python-doctr`](https://github.com/mindee/doctr)
+  and parses currency-formatted strings; still tuning the price→product
+  association and Euro superscript-cent tags (`5⁴⁰`) on real shelves.
+- **In-domain detector.** SKU-110K is dead-on, evenly-lit US grocery; on angled
+  or dim store photos the fine-tune localises well but scores lower (hence
+  `detector_conf` 0.2). `train_sku110k.sbatch` retrains on any labelled set
+  (`IMGSZ=1280` for the tiniest facings).
+- **Deliberately out of scope:** video / tracking, per-client model training,
+  batch folders, cloud vision backends, multi-tenant auth.
 
 ## Credits & licensing
 
@@ -211,3 +228,13 @@ Environment variables, prefix `VISION_MCP_` (see `src/vision_mcp/config.py`):
 | `DETECTOR_IMGSZ` | `960` | YOLO inference resolution |
 | `MAX_EDGE_PX` | `1920` | longest image edge before inference |
 | `MAX_INLINE_IMAGE_BYTES` | `4 MiB` | above this, annotated images return as a reference |
+
+---
+
+<div align="center">
+
+**Built by Trần Quang Thành** — AI Engineer specialising in Computer Vision &amp; LLM agents.
+
+[GitHub @thanhthanhhp123](https://github.com/thanhthanhhp123)
+
+</div>

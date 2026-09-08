@@ -40,7 +40,14 @@ def _markdown(report: dict) -> str:
 
     if report.get("read_price_tags"):
         pt = report["read_price_tags"]
-        lines += [f"**Price tags:** {pt['status']}", ""]
+        if pt["status"] == "ok":
+            lines.append(f"**Price tags:** {len(pt['tags'])} read")
+            for t in pt["tags"][:10]:
+                val = f"{t['price_value']:.2f} {t['currency'] or ''}".strip()
+                lines.append(f"- {val or t['text']}")
+        else:
+            lines.append(f"**Price tags:** {pt['status']}")
+        lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"
 

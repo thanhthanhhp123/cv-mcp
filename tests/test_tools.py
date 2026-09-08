@@ -66,11 +66,17 @@ def test_check_planogram_missing_slot(fake_detector, synthetic_shelf_datauri):
     assert any(d.type == "missing" and d.label == "absent" for d in out.deviations)
 
 
-def test_read_price_tags_is_stub(synthetic_shelf_datauri):
-    out = read_price_tags(ImageInput(image=synthetic_shelf_datauri))
-    assert out.status == "not_implemented"
-    assert out.tags == []
-    assert out.notes
+def test_read_price_tags_without_ocr_extra(synthetic_shelf_datauri):
+    """With the optional 'ocr' extra absent, the tool degrades cleanly."""
+    try:
+        import doctr  # noqa: F401
+    except ImportError:
+        out = read_price_tags(ImageInput(image=synthetic_shelf_datauri))
+        assert out.status == "not_implemented"
+        assert out.tags == []
+        assert out.notes
+    else:
+        pytest.skip("ocr extra installed — covered by test_ocr.py")
 
 
 def test_shelf_report_combines(fake_detector, synthetic_shelf_datauri):

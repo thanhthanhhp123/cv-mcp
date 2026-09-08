@@ -57,8 +57,9 @@ def detect_gaps(params: ImageInput) -> DetectGapsOutput:
 
 @mcp.tool()
 def read_price_tags(params: ImageInput) -> ReadPriceTagsOutput:
-    """Read price labels and link each to the nearest product. NOTE: the OCR
-    backend is currently a stub and returns status 'not_implemented'."""
+    """OCR the price labels on a shelf photo (python-doctr) and link each price to
+    the nearest product. Returns status 'not_implemented' if the optional 'ocr'
+    extra isn't installed."""
     return _guard(_read_price_tags, params)
 
 
@@ -104,10 +105,19 @@ def models_available() -> str:
                 "device": s.device,
                 "class_agnostic": True,
             },
-            "ocr": {"backend": "stub", "status": "not_implemented"},
+            "ocr": {"backend": "python-doctr", "available": _ocr_available()},
         },
         indent=2,
     )
+
+
+def _ocr_available() -> bool:
+    try:
+        import doctr  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
 
 
 @mcp.resource("image://{image_id}")
