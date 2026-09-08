@@ -66,16 +66,24 @@ back with the counts, the gap list, and an annotated picture. Walkthrough:
 
 ### Why a retail-specific detector
 
-Same bread shelf, same resolution. Stock YOLO only knows its 80 COCO classes, so
-it approximates the loaves as **"donut"** / **"cake"** — fine for a box, useless
-for a label. The fine-tune has one purpose-built **"product"** class and was
-trained on dense-shelf layouts, and it scores **0.938 mAP@0.5 on the SKU-110K
-retail benchmark**.
+This is a class-ontology comparison, not a recall one. Stock YOLOv8s has no
+"product" class, so it forces every loaf into the nearest of its 80 COCO labels —
+`donut`, `cake`, `sandwich`. Confident and useless: you can't audit facings from
+a pile of "donuts". The SKU-110K fine-tune has one purpose-built class and reports
+each facing as `product`.
 
 | Stock YOLOv8s — COCO classes | YOLOv8s fine-tuned on SKU-110K |
 |:---:|:---:|
 | <img src="docs/assets/demo-bread-coco.jpg" alt="COCO detector labelling bread as donut"> | <img src="docs/assets/demo-bread-finetune.jpg" alt="Fine-tuned detector labelling bread as product"> |
-| `donut 0.9`, `cake 0.7`, … | `product` (one class, any facing) |
+| `donut 0.78`, `cake`, `sandwich` — wrong ontology | one `product` class per facing — right ontology, **lower scores on this shot** |
+
+That confidence drop is real and expected: a German bakery case behind glass —
+angled, warm-lit, reflective — is about as far from SKU-110K's evenly-lit US
+grocery aisles as a shelf photo gets, so scores fall and the default
+`detector_conf` of 0.2 filters some true loaves. On in-distribution shots like the
+wine shelf above, the same weights box **73/73** facings cleanly. Closing that
+domain gap is the "in-domain detector" item in the [Roadmap](#roadmap); it does
+not affect the benchmark number (**0.938 mAP@0.5 on SKU-110K val**).
 
 ### `shelf_report` output
 
