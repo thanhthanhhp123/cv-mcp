@@ -21,6 +21,7 @@ from vision_mcp.storage import get_storage
 from vision_mcp.tools.check_planogram import check_planogram
 from vision_mcp.tools.count_products import count_products
 from vision_mcp.tools.detect_gaps import detect_gaps
+from vision_mcp.tools.read_price_tags import read_price_tags
 from vision_mcp.tools.shelf_report import shelf_report
 
 
@@ -66,6 +67,17 @@ def main(argv: list[str]) -> int:
     print(f"  gap_count={g.gap_count} rows={g.rows_detected}")
     _save_annotated(g.annotated, out / f"{stem}.gaps.png")
     (out / f"{stem}.gaps.json").write_text(g.model_dump_json(indent=2, exclude={"annotated"}))
+
+    print("read_price_tags:")
+    pt = read_price_tags(base)
+    if pt.status == "ok":
+        print(f"  {len(pt.tags)} price(s): " + ", ".join(
+            f"{t.price_value:.2f}{t.currency or ''}" for t in pt.tags if t.price_value
+        ))
+        _save_annotated(pt.annotated, out / f"{stem}.prices.png")
+    else:
+        print(f"  {pt.status} — {pt.notes[0] if pt.notes else ''}")
+    (out / f"{stem}.prices.json").write_text(pt.model_dump_json(indent=2, exclude={"annotated"}))
 
     slots = None
     if args.slots:
